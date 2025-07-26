@@ -1,0 +1,224 @@
+/* Plex Theme Compressor - Dark Theme Styles */
+
+:root {
+  --plex-bg: #1f2326;
+  --plex-surface: #282a2d;
+  --plex-surface-hover: #32353a;
+  --plex-orange: #e5a00d;
+  --plex-orange-hover: #f1b523;
+  --plex-text: #ffffff;
+  --plex-text-muted: #a5a5a5;
+  --plex-border: #393b3e;
+  --plex-success: #4caf50;
+  --plex-warning: #ff9800;
+  --plex-danger: #f44336;
+}
+
+body {
+  background-color: var(--plex-bg);
+  color: var(--plex-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+  max-width: 800px;
+}
+
+h1 {
+  color: var(--plex-orange);
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Form Elements */
+.form-control,
+.form-select {
+  background-color: var(--plex-surface);
+  border: 1px solid var(--plex-border);
+  color: var(--plex-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--plex-surface-hover);
+  border-color: var(--plex-orange);
+  box-shadow: 0 0 0 0.2rem rgba(229, 160, 13, 0.25);
+  color: var(--plex-text);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: var(--plex-surface);
+  border-color: var(--plex-border);
+  color: var(--plex-text-muted);
+  opacity: 0.6;
+}
+
+.form-label {
+  color: var(--plex-text);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-text {
+  color: var(--plex-text-muted);
+}
+
+.input-group-text {
+  background-color: var(--plex-surface);
+  border: 1px solid var(--plex-border);
+  color: var(--plex-text-muted);
+}
+
+/* Fieldset Styling */
+fieldset {
+  border: 1px solid var(--plex-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+legend {
+  color: var(--plex-orange);
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 0 0.5rem;
+  width: auto;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--plex-orange);
+  border-color: var(--plex-orange);
+  color: #000;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--plex-orange-hover);
+  border-color: var(--plex-orange-hover);
+  color: #000;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background-color: var(--plex-surface);
+  border-color: var(--plex-border);
+  color: var(--plex-text-muted);
+  transform: none;
+}
+
+/* Alerts */
+.alert {
+  border: none;
+  border-radius: 6px;
+}
+
+.alert-info {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+  border-left: 4px solid #2196f3;
+}
+
+.alert-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--plex-success);
+  border-left: 4px solid var(--plex-success);
+}
+
+.alert-warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: var(--plex-warning);
+  border-left: 4px solid var(--plex-warning);
+}
+
+.alert-danger {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--plex-danger);
+  border-left: 4px solid var(--plex-danger);
+}
+
+/* Text Colors */
+.text-success {
+  color: var(--plex-success) !important;
+}
+
+.text-warning {
+  color: var(--plex-warning) !important;
+}
+
+.text-danger {
+  color: var(--plex-danger) !important;
+}
+
+.text-muted {
+  color: var(--plex-text-muted) !important;
+}
+
+/* Spacing */
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.row {
+  margin-bottom: 0.75rem;
+}
+
+.spinner-border-sm {
+  color: #000;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--plex-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--plex-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--plex-text-muted);
+}
+
+/* File Input Styling */
+.form-control[type="file"] {
+  padding: 0.5rem;
+}
+
+.form-control[type="file"]::-webkit-file-upload-button {
+  background-color: var(--plex-orange);
+  border: none;
+  color: #000;
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  margin-right: 0.75rem;
+  font-weight: 500;
+}
+
+.form-control[type="file"]::-webkit-file-upload-button:hover {
+  background-color: var(--plex-orange-hover);
+}
+
+/* Placeholder Text Styling */
+.form-control::placeholder,
+.form-select::placeholder {
+  color: var(--plex-text-muted);
+  opacity: 0.8;
+}
+
+/* TMDB Status Styling */
+#tmdbStatus {
+  text-align: right;
+  display: block;
+  margin-bottom: 0.5rem;
+}
