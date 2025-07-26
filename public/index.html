@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>MP3 Compressor for Plex</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container py-5">
+  <h1 class="mb-4">Plex MP3 Compressor</h1>
+
+  <!-- Status alert area -->
+  <div id="statusAlert" class="alert d-none" role="alert"></div>
+
+  <form id="uploadForm" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="mp3file" class="form-label">Select MP3 file</label>
+      <input type="file" class="form-control" id="mp3file" name="mp3file" accept=".mp3" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="quality" class="form-label">Compression Bitrate</label>
+      <select class="form-select" name="quality" id="quality">
+        <option value="64k">64 kbps</option>
+        <option value="96k">96 kbps</option>
+        <option value="128k" selected>128 kbps</option>
+        <option value="192k">192 kbps</option>
+        <option value="256k">256 kbps</option>
+      </select>
+    </div>
+
+    <!-- TMDB Section -->
+    <div class="mb-3">
+      <label class="form-label">TMDB Cover Art <small class="text-muted">(Optional)</small></label>
+      
+      <div class="row">
+        <div class="col-md-3">
+          <select class="form-select" id="tmdbType" name="tmdbType">
+            <option value="movie">Movie</option>
+            <option value="tv">TV Series</option>
+          </select>
+        </div>
+        <div class="col-md-9">
+          <div class="input-group">
+            <span class="input-group-text">ID</span>
+            <input type="text" class="form-control" id="tmdbId" name="tmdbId" placeholder="e.g. 157336">
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-text mt-2" id="tmdbHelpText">
+        <span id="tmdbStatus">Checking TMDB API status...</span>
+        <br><small>Find TMDB ID from the URL: themoviedb.org/movie/<strong>157336</strong>-interstellar</small>
+      </div>
+      
+      <!-- Fallback title search -->
+      <div class="mt-2">
+        <div class="input-group">
+          <span class="input-group-text">Or Title</span>
+          <input type="text" class="form-control" id="tmdbTitle" name="tmdbTitle" placeholder="e.g. Interstellar">
+        </div>
+        <div class="form-text">Less accurate than ID search</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Title (Optional override)</label>
+      <input type="text" class="form-control" name="title">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Artist (Optional override)</label>
+      <input type="text" class="form-control" name="artist">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Album (Optional override)</label>
+      <input type="text" class="form-control" name="album">
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="submitBtn">
+      <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner" role="status"></span>
+      Compress & Tag
+    </button>
+  </form>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const statusAlert = document.getElementById('statusAlert');
+    const tmdbType = document.getElementById('tmdbType');
+    const tmdbId = document.getElementById('tmdbId');
+    const tmdbTitle = document.getElementById('tmdbTitle');
+    const tmdbStatus = document.getElementById('tmdbStatus');
+
+    function showStatus(message, type = 'info') {
+      statusAlert.className = `alert alert-${type}`;
+      statusAlert.textContent = message;
+      statusAlert.classList.remove('d-none');
+    }
+
+    function hideStatus() {
+      statusAlert.classList.add('d-none');
+    }
+
+    function setLoading(loading) {
+      if (loading) {
+        submitBtn.disabled = true;
+        loadingSpinner.classList.remove('d-none');
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Processing...';
+      } else {
+        submitBtn.disabled = false;
+        loadingSpinner.classList.add('d-none');
+        submitBtn.innerHTML = 'Compress & Tag';
+      }
+    }
+
+    async function checkTMDBStatus() {
+      try {
+        const response = await fetch('/api/tmdb-status');
+        const data = await response.json();
+        
+        if (data.configured) {
+          tmdbStatus.innerHTML = '<span class="text-success">✓ TMDB API key configured</span>';
+          tmdbType.disabled = false;
+          tmdbId.disabled = false;
+          tmdbTitle.disabled = false;
+        } else {
+          tmdbStatus.innerHTML = '<span class="text-warning">⚠ TMDB API key not configured - cover art disabled</span>';
+          tmdbType.disabled = true;
+          tmdbId.disabled = true;
+          tmdbTitle.disabled = true;
+          tmdbType.classList.add('text-muted');
+          tmdbId.classList.add('text-muted');
+          tmdbTitle.classList.add('text-muted');
+        }
+      } catch (error) {
+        tmdbStatus.innerHTML = '<span class="text-danger">✗ Error checking TMDB status</span>';
+        console.error('Error checking TMDB status:', error);
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideStatus();
+      setLoading(true);
+
+      const formData = new FormData(form);
+      
+      showStatus('Processing your MP3 file...', 'info');
+
+      try {
+        const res = await fetch('/compress', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Server error: ${errorText}`);
+        }
+
+        showStatus('Download starting...', 'success');
+
+        const blob = await res.blob();
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = 'theme.mp3';
+        a.click();
+
+        showStatus('File processed and downloaded successfully!', 'success');
+      } catch (error) {
+        console.error('Error:', error);
+        showStatus(`Error: ${error.message}`, 'danger');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // Initialize TMDB status check when page loads
+    document.addEventListener('DOMContentLoaded', checkTMDBStatus);
+  </script>
+</body>
+</html>

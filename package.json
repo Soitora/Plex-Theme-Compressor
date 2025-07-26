@@ -1,0 +1,25 @@
+{
+  "name": "plex-theme-compressor",
+  "version": "1.0.0",
+  "description": "Node.js web app to compress MP3s and tag them with metadata and cover art using TMDB.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "multer": "^2.0.2",
+    "music-metadata": "^11.7.3",
+    "node-id3": "^0.2.9",
+    "tmp-promise": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
